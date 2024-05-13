@@ -1,0 +1,5 @@
+public class weatherApiResponseWrapperLWC {
+    @AuraEnabled public String name;
+    @AuraEnabled public Double temp;
+
+}
