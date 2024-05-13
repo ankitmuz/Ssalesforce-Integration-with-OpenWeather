@@ -1,0 +1,60 @@
+Global class WeatherDetailsClass {
+    
+    @AuraEnabled  
+    public  static weatherApiResponseWrapperLWC getWeatherDetails(String cityName){
+        String remoteUrl = 'https://api.openweathermap.org/data/2.5/weather?';
+        String weatherApiKey = '600418e7cf64c715fcc3787dcf564d28'; 
+        String FinalEndpoint = remoteUrl+ 'q='+cityName+ '&appid='+weatherApiKey;
+        System.debug('FinalEndpoint '+FinalEndpoint);
+        weatherApiResponseWrapperLWC weatherAPIresLWC = new weatherApiResponseWrapperLWC();
+         
+        
+        Http ht = new Http();
+        HttpRequest request = new HttpRequest();
+        HttpResponse response = new HttpResponse();
+        
+        request.setEndpoint(FinalEndpoint);
+        request.setMethod('GET');
+        request.setHeader('Content-Type', 'application/json');
+        //request.setHeader('Authorization', 'Bearer  600418e7cf64c715fcc3787dcf564d28');
+        response = ht.send(request);
+        System.debug('Http method runing '+response);
+        
+        
+        if(response.getstatusCode() == 200 ||response.getstatusCode() == 201){
+            System.debug('response check '+JSON.serialize(response.getbody()));
+            String body = response.getbody();
+            system.debug('response status --> '+body);
+            //System.debug('Class runing ');
+            
+             // Wrapper class
+             WeatherAPIResponseWrapper weatherAPIres = (WeatherAPIResponseWrapper)System.JSON.deserialize(body, WeatherAPIResponseWrapper.class);
+                system.debug('weatherAPIres ---'+weatherAPIres);
+            
+            
+            //City Names print
+                weatherAPIresLWC.name = weatherAPIres.name;
+            	System.debug('City Names '+weatherAPIresLWC.name);
+            
+            
+            
+            // Temperature Print 
+            	weatherAPIresLWC.temp = weatherAPIres.main.temp;
+            	System.debug('Temperature '+weatherAPIresLWC.temp);
+            
+             return weatherAPIresLWC; 
+      
+            
+        }
+        else{
+            System.debug('response status --> '+response.getbody());
+            System.debug('Error fetching weather data: ' + response.getStatus() + ' - ' + response.getStatusCode());
+            throw new CalloutException('Error fetching weather data: ' + response.getStatus() + ' - ' + response.getStatusCode());
+        }
+        
+        // Insted of storing all weather data, can we pass the city_Name to the external system show the output OR store the output.  
+     
+        
+    }
+
+}
