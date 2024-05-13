@@ -1,0 +1,33 @@
+public class weatherApiResponseWrapper {
+    @AuraEnabled
+	public String base;	//stations
+	public cls_main main;
+	public Integer visibility;	//10000
+	public Integer dt;	//1485789600
+	public cls_sys sys;
+	public Integer id;	//2643743
+	public String name;	//London
+	public Integer cod;	//200
+    
+	public class cls_main {
+		  @AuraEnabled public Double temp;	//280.32
+		  public Integer pressure;	//1012
+		  @AuraEnabled public Integer humidity;	//81
+		  public Double temp_min;	//279.15
+		  public Double temp_max;	//281.15
+	}
+	public class cls_sys {
+		  @AuraEnabled public Integer type;	//1
+		  @AuraEnabled public Integer id;	//5091
+		  public Double message;	//0.0103
+		  @AuraEnabled public String country;	//GB
+		  public Integer sunrise;	//1485762037
+		  public Integer sunset;	//1485794875
+	}
+    @AuraEnabled
+	public static weatherApiResponseWrapper parse(String json){
+		return (weatherApiResponseWrapper) System.JSON.deserialize(json, weatherApiResponseWrapper.class);
+	}
+
+
+}
